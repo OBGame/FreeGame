@@ -5,6 +5,7 @@
 <title>Insert title here</title>
 
 <script src="js/3rd/easeljs-0.5.0.min.js"></script>
+<script src="js/3rd/preloadjs-0.2.0.min.js"></script>
 
 
 <script>
@@ -16,11 +17,26 @@ function init() {
 	
 	document.body.appendChild(canNode);
 	
-	var stage=new Game.Stage(canNode);
-	window.q=stage;
-	stage.init();
-	stage.updateMap();
 	
+	
+	var manifest=[
+		"res/textures/grass-128.jpg",
+		"res/textures/lake-128.jpg"
+	];
+	var preload=new createjs.PreloadJS();
+	preload.onComplete=function(event) {
+		// start our stage after pre-load
+		var stage=new Game.Stage(canNode);
+		window.q=stage;
+		stage.init();
+		stage.updateMap();
+	};
+	preload.onFileLoad=function(event) {
+		console.log("resource " + event.src+" loaded");
+	};
+	//preload.setMaxConnections(5); //By default, only a single connection is open at any time.
+	
+	preload.loadManifest(manifest);
 }
 
 Game={};
