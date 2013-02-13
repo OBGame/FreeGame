@@ -75,9 +75,19 @@ Game.Stage.prototype.init=function() {
 	var s=new createjs.Shape(g);
 	s.x=0;
 	s.y=0;
-	this.stage.addChild(s);
+	//this.stage.addChild(s);
 	
-	
+	var dragger=new createjs.Container();
+	dragger.x=dragger.y=0;
+	dragger.addChild(s);
+	dragger.onPress=function(evt) {
+		var offset={x:evt.target.x-evt.stageX, y:evt.target.y-evt.stageY};
+		evt.onMouseMove=function(ev){
+			ev.target.x=ev.stageX+offset.x;
+			ev.target.y=ev.stageY+offset.y;
+		}
+	};
+	this.stage.addChild(dragger);
 	
 	
 	// debug - locate
@@ -129,8 +139,8 @@ Game.Stage.prototype.updateMap=function() {
 	var gridSize=16;
 	
 	var mapctx=this.buffer["map"];
-	mapctx.canvas.width=2000;
-	mapctx.canvas.height=1000;
+	mapctx.canvas.width=2048;//32*64
+	mapctx.canvas.height=2048;
 	for(var i=0; i<64; i++) {
 		for(var j=0; j<64; j++) {
 			var grid=onescene.get(i,j);
@@ -146,7 +156,8 @@ Game.Stage.prototype.updateMap=function() {
 	
 	
 	this.graphics_map.beginBitmapFill(this.buffer["map"].canvas, "no-repeat");
-	this.graphics_map.rect(0,0,this.stage.canvas.width,this.stage.canvas.height);
+	this.graphics_map.rect(0,0,mapctx.canvas.width,mapctx.canvas.height);
+	//this.graphics_map.rect(0,0,this.stage.canvas.width,this.stage.canvas.height);
 	
 	
 	return this;
