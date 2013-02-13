@@ -1,10 +1,132 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="US-ASCII">
+<meta charset="utf-8">
 <title>Insert title here</title>
+
+<script src="js/3rd/easeljs-0.5.0.min.js"></script>
+
+
+<script>
+function init() {
+	var canNode=document.createElement("canvas");
+	canNode.style.border="1px solid #777";
+	canNode.width=800;
+	canNode.height=600;
+	
+	document.body.appendChild(canNode);
+	
+	var stage=new Game.Stage(canNode);
+	window.q=stage;
+	stage.init();
+	stage.updateMap();
+	
+}
+
+Game={};
+Game.Stage=function(canvas){
+	this.stage=new createjs.Stage(canvas);
+	
+	this.textures={
+		"grass": (function(){
+			var img=new Image();
+			img.src="res/textures/grass-128.jpg";
+			return img;
+		})()
+	};
+	var textures=this.textures;
+	
+	this.buffer={
+		"map": (function(){
+			var mapctx=document.createElement("canvas").getContext("2d");
+			return mapctx;
+		})()
+	};
+};
+Game.Stage.prototype.init=function() {
+	createjs.Ticker.setFPS(30);
+	createjs.Ticker.addListener(this);
+	
+	var g=new createjs.Graphics();
+	
+	this.graphics_map=g;
+			
+	var s=new createjs.Shape(g);
+	s.x=0;
+	s.y=0;
+	this.stage.addChild(s);
+	
+	
+	
+	
+	
+	var circle=new createjs.Shape();
+	circle.graphics.beginFill("red").drawCircle(0,0,50);
+	circle.x=100;
+	circle.y=100;
+	this.stage.addChild(circle);
+	
+	
+	
+	/*
+	var ss=new createjs.SpriteSheet({
+		"animations":{
+			"default": [0,0]
+		},
+		"images": ["res/textures/grass-128.jpg"],
+		"frames": {
+			"height": 128,
+			"width": 128,
+			"regX": 0,
+			"regY": 0,
+			"count": 1
+		}
+	});
+	for(var i=0; i<64; i++) {
+		for(var j=0; j<64; j++) {
+			var grant=new createjs.BitmapAnimation(ss);
+			grant.x=64 * i;
+			grant.y=64 * j;
+			grant.scaleX=.5;
+			grant.scaleY=.5;
+			grant.gotoAndPlay("default");
+			this.stage.addChild(grant);
+		}
+	}
+	*/
+	
+	return this;
+};
+Game.Stage.prototype.updateMap=function() {
+	this.buffer["map"]=this.buffer["map"] || document.createElement("canvas").getContext("2d");
+	var mapctx=this.buffer["map"];
+	mapctx.canvas.width=2000;
+	mapctx.canvas.height=1000;
+	for(var i=0; i<64; i++) {
+		for(var j=0; j<64; j++) {
+			mapctx.drawImage(this.textures["grass"], 0, 0, this.textures["grass"].width, this.textures["grass"].height, i*128, j*128, 128, 128);
+		}
+	}
+	
+	
+	this.graphics_map.beginBitmapFill(this.buffer["map"].canvas, "no-repeat");
+	this.graphics_map.rect(0,0,this.stage.canvas.width,this.stage.canvas.height);
+	
+	
+	return this;
+};
+Game.Stage.prototype.tick=function(elapsed) {
+	//The listener can be a function, or an object with a tick function defined.
+	this.stage.update();
+};
+
+</script>
+
 </head>
-<body>
-12
+<body onload="init();">
+
+
+
+
 </body>
 </html>
