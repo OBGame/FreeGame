@@ -136,7 +136,7 @@ Game.Stage.prototype.updateMap=function() {
 	onescene.mapExpand();
 	
 	this.buffer["map"]=this.buffer["map"] || document.createElement("canvas").getContext("2d");
-	var gridSize=16;
+	var gridSize=32;
 	
 	var mapctx=this.buffer["map"];
 	mapctx.canvas.width=2048;//32*64
@@ -146,7 +146,11 @@ Game.Stage.prototype.updateMap=function() {
 			var grid=onescene.get(i,j);
 			var terrain=grid.terrain;//grass, lake
 			
-			if(this.textures[terrain]) {
+			var painter=function() {
+				
+			}
+			
+			if(this.textures[terrain] && i!=10 && i!=11) {
 				mapctx.drawImage(this.textures[terrain], 0, 0, 
 					this.textures[terrain].width, this.textures[terrain].height, 
 					i*gridSize, j*gridSize, gridSize, gridSize);
@@ -154,9 +158,12 @@ Game.Stage.prototype.updateMap=function() {
 		}
 	}
 	
-	
-	this.graphics_map.beginBitmapFill(this.buffer["map"].canvas, "no-repeat");
+	this.graphics_map.beginBitmapFill(this.textures["grass"], "repeat");
 	this.graphics_map.rect(0,0,mapctx.canvas.width,mapctx.canvas.height);
+	
+	this.graphics_map.beginBitmapFill(this.buffer["map"].canvas, "repeat");
+	//this.graphics_map.rect(0,0,mapctx.canvas.width,mapctx.canvas.height);
+	this.graphics_map.drawCircle(300,300,200)
 	//this.graphics_map.rect(0,0,this.stage.canvas.width,this.stage.canvas.height);
 	
 	
