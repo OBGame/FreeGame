@@ -73,6 +73,8 @@ Game.Stage.prototype.init=function() {
 	this.graphics_map=g;
 			
 	var s=new createjs.Shape(g);
+	s.scaleX=.5;
+	s.scaleY=.5;
 	s.x=0;
 	s.y=0;
 	//this.stage.addChild(s);
@@ -141,29 +143,105 @@ Game.Stage.prototype.updateMap=function() {
 	var mapctx=this.buffer["map"];
 	mapctx.canvas.width=2048;//32*64
 	mapctx.canvas.height=2048;
+	
+	this.graphics_map.beginBitmapFill(this.textures["grass"], "repeat");
+	this.graphics_map.rect(0,0,mapctx.canvas.width,mapctx.canvas.height).endFill();
+	
+	//this.graphics_map.beginBitmapFill(this.textures["grass"], "repeat");
+	//this.graphics_map.moveTo(5, 75).bezierCurveTo(45,90,75,75,-25,-25).closePath();
+	
 	for(var i=0; i<64; i++) {
 		for(var j=0; j<64; j++) {
 			var grid=onescene.get(i,j);
 			var terrain=grid.getTerrain();//grass, lake
 			
-			var painter=function() {
-				
-			}
-			
-			if(this.textures[terrain]) {// && i!=10 && i!=11
+			if(this.textures[terrain] && terrain=="lake") {// && i!=10 && i!=11
+				/*
 				mapctx.drawImage(this.textures[terrain], 0, 0, 
 					this.textures[terrain].width, this.textures[terrain].height, 
 					i*gridSize, j*gridSize, gridSize, gridSize);
+				*/
+	
+				this.graphics_map.beginBitmapFill(this.textures[terrain], "repeat");
+				this.graphics_map.rect(i*gridSize,j*gridSize,gridSize,gridSize);
+				
+				var tx=i*gridSize, ty=j*gridSize;
+				
+				if(onescene.get(i, j-1) && onescene.get(i, j-1).getTerrain()!=terrain) {
+					this.graphics_map.beginBitmapFill(this.textures[onescene.get(i, j-1).getTerrain()], "repeat");
+					this.graphics_map.moveTo(tx,ty+gridSize/3)
+						.lineTo(tx+gridSize, ty+gridSize/3)
+						.lineTo(tx+gridSize, ty)
+						.lineTo(tx, ty)
+						.closePath();
+				}
+				
+				if(onescene.get(i, j+1) && onescene.get(i, j+1).getTerrain()!=terrain) {
+					this.graphics_map.beginBitmapFill(this.textures[onescene.get(i, j+1).getTerrain()], "repeat");
+					this.graphics_map.moveTo(tx,ty+gridSize*2/3)
+						.lineTo(tx+gridSize, ty+gridSize*2/3)
+						.lineTo(tx+gridSize, ty+gridSize)
+						.lineTo(tx, ty+gridSize)
+						.closePath();
+				}
+				
+				if(onescene.get(i-1, j) && onescene.get(i-1, j).getTerrain()!=terrain) {
+					this.graphics_map.beginBitmapFill(this.textures[onescene.get(i-1, j).getTerrain()], "repeat");
+					this.graphics_map.moveTo(tx+gridSize/3,ty)
+						.lineTo(tx+gridSize/3, ty+gridSize)
+						.lineTo(tx, ty+gridSize)
+						.lineTo(tx, ty)
+						.closePath();
+				}
+				
+				if(onescene.get(i+1, j) && onescene.get(i+1, j).getTerrain()!=terrain) {
+					this.graphics_map.beginBitmapFill(this.textures[onescene.get(i+1, j).getTerrain()], "repeat");
+					this.graphics_map.moveTo(tx+gridSize*2/3,ty)
+						.lineTo(tx+gridSize*2/3, ty+gridSize)
+						.lineTo(tx+gridSize, ty+gridSize)
+						.lineTo(tx+gridSize, ty)
+						.closePath();
+				}
+				
+				
+				/*
+				if(onescene.get(i+1, j-1) && onescene.get(i+1, j-1).getTerrain()!=terrain) {
+					this.graphics_map.beginBitmapFill(this.textures[onescene.get(i+1, j-1).getTerrain()], "repeat");
+					this.graphics_map.rect(i*gridSize+gridSize/2,j*gridSize,gridSize/2,gridSize/2);
+					
+					this.graphics_map.beginBitmapFill(this.textures[terrain], "repeat");
+					this.graphics_map.moveTo(tx+gridSize/2,ty+gridSize/2)
+						.arc(tx+gridSize/2, ty+gridSize/2, 
+							gridSize/2,
+							-Math.PI/2, 
+							0)
+						.closePath();
+				}
+				*/
+				
+				
+				
+				/*
+				this.graphics_map.lineTo(tx+gridSize,ty+gridSize)
+						.lineTo(tx, ty+gridSize).lineTo(tx, ty).closePath();
+				*/
+
+				
+				/*
+				this.graphics_map.moveTo(tx,ty)
+					.bezierCurveTo(tx+gridSize/3, ty+gridSize/3, 
+						tx+gridSize*2/3, ty+gridSize*2/3, tx+gridSize, ty).closePath();
+				*/
 			}
 		}
 	}
 	
-	this.graphics_map.beginBitmapFill(this.textures["grass"], "repeat");
-	this.graphics_map.rect(0,0,mapctx.canvas.width,mapctx.canvas.height);
-	
-	this.graphics_map.beginBitmapFill(this.buffer["map"].canvas, "repeat");
+	//this.graphics_map.beginBitmapFill(this.textures["grass"], "repeat");
 	//this.graphics_map.rect(0,0,mapctx.canvas.width,mapctx.canvas.height);
-	this.graphics_map.drawCircle(300,300,300)
+	
+	//this.graphics_map.beginBitmapFill(this.buffer["map"].canvas, "repeat");
+	//this.graphics_map.rect(0,0,mapctx.canvas.width,mapctx.canvas.height);
+	//this.graphics_map.drawCircle(300,300,300)
 	//this.graphics_map.rect(0,0,this.stage.canvas.width,this.stage.canvas.height);
 	
 	
