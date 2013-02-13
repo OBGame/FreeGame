@@ -133,7 +133,7 @@ Game.Stage.prototype.updateMap=function() {
 	var collection=new Game.SceneCollection();
 	collection.init();
 	var onescene=collection.get(0, 0);
-	onescene.mapExpand();
+	//onescene.mapExpand();
 	
 	this.buffer["map"]=this.buffer["map"] || document.createElement("canvas").getContext("2d");
 	var gridSize=32;
@@ -144,7 +144,7 @@ Game.Stage.prototype.updateMap=function() {
 	for(var i=0; i<64; i++) {
 		for(var j=0; j<64; j++) {
 			var grid=onescene.get(i,j);
-			var terrain=grid.terrain;//grass, lake
+			var terrain=grid.getTerrain();//grass, lake
 			
 			var painter=function() {
 				
