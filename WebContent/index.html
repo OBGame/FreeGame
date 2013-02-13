@@ -32,6 +32,11 @@ Game.Stage=function(canvas){
 			var img=new Image();
 			img.src="res/textures/grass-128.jpg";
 			return img;
+		})(),
+		"lake": (function(){
+			var img=new Image();
+			img.src="res/textures/lake-128.jpg";
+			return img;
 		})()
 	};
 	var textures=this.textures;
@@ -59,7 +64,7 @@ Game.Stage.prototype.init=function() {
 	
 	
 	
-	
+	// debug - locate
 	var circle=new createjs.Shape();
 	circle.graphics.beginFill("red").drawCircle(0,0,50);
 	circle.x=100;
@@ -98,13 +103,28 @@ Game.Stage.prototype.init=function() {
 	return this;
 };
 Game.Stage.prototype.updateMap=function() {
+	
+	var collection=new Game.SceneCollection();
+	collection.init();
+	var onescene=collection.get(0, 0);
+	onescene.mapExpand();
+	
 	this.buffer["map"]=this.buffer["map"] || document.createElement("canvas").getContext("2d");
+	var gridSize=16;
+	
 	var mapctx=this.buffer["map"];
 	mapctx.canvas.width=2000;
 	mapctx.canvas.height=1000;
 	for(var i=0; i<64; i++) {
 		for(var j=0; j<64; j++) {
-			mapctx.drawImage(this.textures["grass"], 0, 0, this.textures["grass"].width, this.textures["grass"].height, i*128, j*128, 128, 128);
+			var grid=onescene.get(i,j);
+			var terrain=grid.terrain;//grass, lake
+			
+			if(this.textures[terrain]) {
+				mapctx.drawImage(this.textures[terrain], 0, 0, 
+					this.textures[terrain].width, this.textures[terrain].height, 
+					i*gridSize, j*gridSize, gridSize, gridSize);
+			}
 		}
 	}
 	
@@ -121,6 +141,10 @@ Game.Stage.prototype.tick=function(elapsed) {
 };
 
 </script>
+
+<script src="js/map/SceneCollection.js"></script>
+<script src="js/map/BaseAtom.js"></script>
+<script src="js/map/AtomScene.js"></script>
 
 </head>
 <body onload="init();">
