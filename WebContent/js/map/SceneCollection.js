@@ -24,6 +24,7 @@ Game.SceneCollection.prototype.generateId=function(i,j){
 	return i+"-"+j;
 }
 Game.SceneCollection.prototype.mapExpand=function(i,j,direct) {
+	console.log("Collection mapExpand");
 	var orginScene=this.scenes[this.generateId(i,j)];
 	if(!orginScene){
 		console.log("node not exist:"+this.generateId(i,j));
@@ -69,7 +70,15 @@ Game.SceneCollection.prototype.mapExpand=function(i,j,direct) {
 
 Game.SceneCollection.prototype.get=function(x,y){
 	var orginScene=this.scenes[this.generateId(x,y)];
-	return orginScene;
+	if(orginScene){
+		orginScene.mapExpand();
+		return orginScene;
+	}else{
+		console.log("new  AtomScene.");
+		var onescene=new AtomScene();
+		this.scenes[this.generateId(x,y)]=onescene;
+		return onescene;
+	}
 }
 
 
